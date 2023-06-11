@@ -1,0 +1,6 @@
+5833C5 morado claro del boton login
+8E8BFF morado claro de los cuadros de dialogo 
+835AFB morado de boton principíante
+8EBF24 amarillo de boton intermedio
+C53333 rojo de boton avanzado
+jugar con las transparencias de los rectangulos para que se asemejen al diseño de figma
