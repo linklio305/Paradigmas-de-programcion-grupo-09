@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 
-<AnchorPane onKeyPressed="#handleKeyPress"  focusTraversable="true"  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.learninvaders.GameCoreController">
+<AnchorPane fx:id="miPane"  prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.learninvaders.GameCoreController">
     <children>
         <ImageView fitHeight="775.0" fitWidth="1030.0">
             <image>
                 <Image url="@../../../imagenes/fondoSolo.png" />
             </image>
         </ImageView>
-        <Button fx:id="switchToSecondary" layoutX="905.0" layoutY="7.0" mnemonicParsing="false" onAction="#switchToSecondary" prefHeight="40.0" prefWidth="119.0" text="Salir" />
-        <Pane  fx:id="miPane" layoutX="54.0" layoutY="118.0" prefHeight="588.0" prefWidth="939.0">
-            
-        </Pane>
+        <Canvas fx:id="miCanva" height="768" width="1024" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" />
+        <!--<Button layoutX="945.0" layoutY="35.0" mnemonicParsing="false" text="Button" />-->
     </children>
 </AnchorPane>

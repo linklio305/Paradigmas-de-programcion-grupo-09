@@ -20,6 +20,7 @@ public class App extends Application {
         scene = new Scene(loadFXML("primary"), 1024, 768);
         stage.setScene(scene);
         stage.setTitle("LearnInvaders");
+        stage.setResizable(false);
         stage.show();
     }
 
