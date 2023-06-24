@@ -4,7 +4,8 @@
  */
 package com.mycompany.learninvaders;
 
-import contenido.Avion;
+import contenido.BackGroundAnimated;
+import contenido.Player;
 import java.io.IOException;
 import java.util.HashMap;
 import javafx.animation.AnimationTimer;
@@ -26,7 +27,8 @@ import javafx.scene.layout.AnchorPane;
  */
 public class GameCoreController {
 
-    Avion avion;
+    Player avion;
+    BackGroundAnimated backgroundAnimated;
     private GraphicsContext graficos;
     private int x = 0;
     public static boolean goRight;
@@ -45,25 +47,39 @@ public class GameCoreController {
     private AnchorPane miPane;
 
     public void initialize() {
-        createPlayer();
+        initComponents();
         cicloJuego();
     }
 
-    public void createPlayer() {
+    public void initComponents() {
         images = new HashMap<String, Image>();
         loadImages();
         graficos = miCanva.getGraphicsContext2D();
         miCanva.setFocusTraversable(true);
-        avion = new Avion(462, 666, 3, "nave");
+        avion = new Player(3, 462, 666, 6, "nave");
+        backgroundAnimated = new BackGroundAnimated(0, 0, 6, "dynamic", "dynamicRev");
     }
 
     public void loadImages() {
         images.put("nave", new Image("/imagenes/naves/naveBlanca.png"));
+        images.put("background", new Image("/imagenes/fondoSolo.png"));
+        images.put("dynamic", new Image("/imagenes/dinamicos/fondo_dinamico.png"));
+        images.put("dynamicRev", new Image("/imagenes/dinamicos/fondo_dinamico_2.png"));
+        images.put("enemy", new Image("/imagenes/naves/eBasico.png"));
+    }
+
+    public void createEnemies() {
+        for (int i = 1; i < 6; i++) {
+            Player enemy = new Player(1, 150 * i, 200, 0, "enemy");
+            enemy.drawSome(graficos);
+        }
     }
 
     public void draw() {
         graficos.clearRect(0, 0, miCanva.getWidth(), miCanva.getHeight());
-        avion.placeAvion(graficos);
+        backgroundAnimated.drawSome(graficos);
+        avion.drawSome(graficos);
+        createEnemies();
     }
 
     // ciclo de juego principal
@@ -80,6 +96,7 @@ public class GameCoreController {
 
     public void upState() {
         avion.move();
+        backgroundAnimated.move();
     }
 
     //Funcion para devolverse, se debe configurar el menu al precionar scape.
@@ -100,9 +117,10 @@ public class GameCoreController {
                 avion.setSpeedMove(12);
         }
     }
+    
 
 //codigo encargado de enviar instrucciones a la nave pintada
-    public void handleKeyReleased(KeyEvent event) {
+    public void handleKeyReleased(KeyEvent event) throws IOException {
         switch (event.getCode().toString()) {
             case "D":
                 goRight = false;
@@ -112,6 +130,9 @@ public class GameCoreController {
                 break;
             case "W":
                 avion.setSpeedMove(6);
+                break;
+            case "Q":
+                App.setRoot("question");
         }
     }
 

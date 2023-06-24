@@ -1,0 +1,8 @@
+@font-face {
+
+}
+
+.myText {
+    -fx-font-size: 33px;
+    -fx-text-fill: WHITE;
+}

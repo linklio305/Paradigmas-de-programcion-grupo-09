@@ -6,7 +6,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="miPane"  prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.learninvaders.GameCoreController">
+<AnchorPane fx:id="miPane"  prefHeight="768.0" prefWidth="1024.0"
+            xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mycompany.learninvaders.GameCoreController">
     <children>
         <ImageView fitHeight="775.0" fitWidth="1030.0">
             <image>
