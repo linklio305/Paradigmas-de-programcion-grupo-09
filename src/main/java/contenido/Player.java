@@ -6,6 +6,8 @@ package contenido;
 
 import com.mycompany.learninvaders.GameCoreController;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.Rectangle;
+
 /**
  *
  * @author jarg
@@ -43,6 +45,16 @@ public class Player extends GameObject {
 
     public void setVidas(int vidas) {
         this.vidas = vidas;
+    }
+
+    public Rectangle getRectangle() {
+        return new Rectangle(this.x, this.y, 100, 100);
+    }
+
+    public void checkTouch(Bullet bullet) {
+        if (this.getRectangle().getBoundsInLocal().intersects(bullet.getRectangle().getBoundsInLocal())) {
+            System.out.println("the bullet touch nave");
+        }
     }
 
     @Override

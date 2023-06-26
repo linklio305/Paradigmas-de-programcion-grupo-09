@@ -8,25 +8,25 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.learninvaders.PrimaryController">
-   <children>
-      <ImageView fitHeight="776.0" fitWidth="1032.0">
-         <image>
-            <Image url="@../../../imagenes/fondo.png" />
-         </image>
-      </ImageView>
-      <AnchorPane layoutX="192.0" layoutY="461.0" prefHeight="205.0" prefWidth="640.0">
-         <children>
-            <TextField layoutX="99.0" layoutY="14.0" prefHeight="58.0" prefWidth="456.0">
-               <font>
-                  <Font name="System Bold" size="26.0" />
-               </font>
-            </TextField>
-            <Button fx:id="switchToSecondary" onAction="#switchToSecondary" layoutX="99.0" layoutY="101.0" mnemonicParsing="false" opacity="0.79" prefHeight="52.0" prefWidth="456.0" style="-fx-background-color: fc4aff;" text="Aceptar" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Button>
-         </children>
-      </AnchorPane>
-   </children>
+    <children>
+        <ImageView fitHeight="776.0" fitWidth="1032.0">
+            <image>
+                <Image url="@../../../imagenes/fondo.png" />
+            </image>
+        </ImageView>
+        <AnchorPane layoutX="192.0" layoutY="461.0" prefHeight="205.0" prefWidth="640.0">
+            <children>
+                <TextField layoutX="99.0" layoutY="14.0" prefHeight="58.0" prefWidth="456.0" fx:id="textField">
+                    <font>
+                        <Font name="System Bold" size="26.0" />
+                    </font>
+                </TextField>
+                <Button fx:id="switchToSecondary" onAction="#switchToSecondary" layoutX="99.0" layoutY="101.0" mnemonicParsing="false" opacity="0.79" prefHeight="52.0" prefWidth="456.0" style="-fx-background-color: fc4aff;" text="Aceptar" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Button>
+            </children>
+        </AnchorPane>
+    </children>
 </AnchorPane>

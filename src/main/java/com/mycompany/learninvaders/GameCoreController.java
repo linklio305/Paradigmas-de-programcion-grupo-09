@@ -5,9 +5,12 @@
 package com.mycompany.learninvaders;
 
 import contenido.BackGroundAnimated;
+import contenido.Bullet;
 import contenido.Player;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -28,6 +31,7 @@ import javafx.scene.layout.AnchorPane;
 public class GameCoreController {
 
     Player avion;
+    Bullet bala;
     BackGroundAnimated backgroundAnimated;
     private GraphicsContext graficos;
     private int x = 0;
@@ -56,19 +60,34 @@ public class GameCoreController {
         loadImages();
         graficos = miCanva.getGraphicsContext2D();
         miCanva.setFocusTraversable(true);
-        avion = new Player(3, 462, 666, 6, "nave");
+        bala = new Bullet(60, 666, 0, "bullet");
+        switch (App.levelHard) {
+            case "easy":
+                avion = new Player(3, 462, 666, 6, "nave_easy");
+                break;
+            case "medium":
+                avion = new Player(3, 462, 666, 6, "nave_medium");
+                break;
+            case "hard":
+                avion = new Player(3, 462, 666, 6, "nave_hard");
+                break;
+        }
         backgroundAnimated = new BackGroundAnimated(0, 0, 6, "dynamic", "dynamicRev");
     }
 
     public void loadImages() {
-        images.put("nave", new Image("/imagenes/naves/naveBlanca.png"));
+        images.put("nave_easy", new Image("/imagenes/naves/naveNaranja.png"));
+        images.put("nave_medium", new Image("/imagenes/naves/naveBlanca.png"));
+        images.put("nave_hard", new Image("/imagenes/naves/naveNegra.png"));
         images.put("background", new Image("/imagenes/fondoSolo.png"));
         images.put("dynamic", new Image("/imagenes/dinamicos/fondo_dinamico.png"));
         images.put("dynamicRev", new Image("/imagenes/dinamicos/fondo_dinamico_2.png"));
         images.put("enemy", new Image("/imagenes/naves/eBasico.png"));
+        images.put("bullet", new Image("/imagenes/bala.png"));
     }
 
     public void createEnemies() {
+
         for (int i = 1; i < 6; i++) {
             Player enemy = new Player(1, 150 * i, 200, 0, "enemy");
             enemy.drawSome(graficos);
@@ -79,6 +98,7 @@ public class GameCoreController {
         graficos.clearRect(0, 0, miCanva.getWidth(), miCanva.getHeight());
         backgroundAnimated.drawSome(graficos);
         avion.drawSome(graficos);
+        bala.drawSome(graficos);
         createEnemies();
     }
 
@@ -94,7 +114,9 @@ public class GameCoreController {
         animationTimer.start();
     }
 
+    //funcion para actualizar los dibujos graficados en pantalla
     public void upState() {
+        avion.checkTouch(bala);
         avion.move();
         backgroundAnimated.move();
     }
@@ -117,7 +139,6 @@ public class GameCoreController {
                 avion.setSpeedMove(12);
         }
     }
-    
 
 //codigo encargado de enviar instrucciones a la nave pintada
     public void handleKeyReleased(KeyEvent event) throws IOException {
