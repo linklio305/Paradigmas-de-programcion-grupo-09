@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
@@ -27,12 +28,23 @@ public class QuestionController implements Initializable {
     @FXML
     Label miLabel;
 
-    QuestionGenerator questionGenerator;
+    @FXML
+    RadioButton q1;
+
+    @FXML
+    RadioButton q2;
+
+    @FXML
+    RadioButton q3;
+
+    QuestionGenerator questionGenerator = new QuestionGenerator(App.levelHard);
+    String[][] oneQuestion = questionGenerator.buildQuestion();
 
     public void placeQuestion() {
-        questionGenerator = new QuestionGenerator("easy");
-        String[][] oneQuestion = questionGenerator.buildQuestion();
         miLabel.setText(oneQuestion[0][0]);
+        q1.setText(oneQuestion[1][0]);
+        q2.setText(oneQuestion[1][1]);
+        q3.setText(oneQuestion[1][2]);
     }
 
     @Override
@@ -41,12 +53,31 @@ public class QuestionController implements Initializable {
     }
 
     public void handleKeyPressed(KeyEvent event) throws IOException {
-        System.out.println("hace algo");
         switch (event.getCode().toString()) {
             case "E":
                 App.setRoot("gameCore");
                 break;
         }
+    }
+
+    public void verification(String answer) throws IOException {
+        if (oneQuestion[2][0].equals(answer)) {
+            App.setRoot("gameCore");
+        } else {
+            App.setRoot("gameOver");
+        }
+    }
+
+    public void handleQone() throws IOException {
+        this.verification(oneQuestion[1][0]);
+    }
+
+    public void handleQtwo() throws IOException {
+        this.verification(oneQuestion[1][1]);
+    }
+
+    public void handleQthree() throws IOException {
+        this.verification(oneQuestion[1][2]);
     }
 
 }
