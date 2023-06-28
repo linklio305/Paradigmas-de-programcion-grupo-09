@@ -12,9 +12,9 @@ import javafx.scene.shape.Rectangle;
  *
  * @author jarg
  */
-public class Bullet extends GameObject {
+public class EBullet extends GameObject {
 
-    public Bullet(int x, int y, int speedMove, String nameImage) {
+    public EBullet(int x, int y, int speedMove, String nameImage) {
         super(x, y, speedMove, nameImage);
     }
 
@@ -50,13 +50,18 @@ public class Bullet extends GameObject {
         this.nameImage = nameImage;
     }
 
-    public Rectangle getRectangle() {
-        return new Rectangle(this.x, this.y, 15, 30);
+    @Override
+    public void drawSome(GraphicsContext graphic) {
+         graphic.drawImage(GameCoreController.images.get(this.nameImage), this.x, this.y);
     }
 
     @Override
-    public void drawSome(GraphicsContext graphic) {
-        graphic.drawImage(GameCoreController.images.get(this.nameImage), this.x, this.y);
+    public void move() {
+        y += speedMove;
+    }
+
+    public Rectangle getRectangle() {
+        return new Rectangle(this.x, this.y, 70, 100);
     }
 
     public boolean checkTouch(Player player) {
@@ -66,8 +71,4 @@ public class Bullet extends GameObject {
         return false;
     }
 
-    @Override
-    public void move() {
-        y -= speedMove;
-    }
 }

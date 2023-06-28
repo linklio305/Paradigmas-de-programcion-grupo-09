@@ -49,12 +49,14 @@ public class QuestionController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        App.questionControl = "other";
         placeQuestion();
     }
 
     public void handleKeyPressed(KeyEvent event) throws IOException {
         switch (event.getCode().toString()) {
             case "E":
+                App.questionControl = "play";
                 App.setRoot("gameCore");
                 break;
         }
@@ -62,6 +64,7 @@ public class QuestionController implements Initializable {
 
     public void verification(String answer) throws IOException {
         if (oneQuestion[2][0].equals(answer)) {
+            App.questionControl = "play";
             App.setRoot("gameCore");
         } else {
             App.setRoot("gameOver");

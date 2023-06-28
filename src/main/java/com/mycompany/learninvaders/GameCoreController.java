@@ -6,11 +6,14 @@ package com.mycompany.learninvaders;
 
 import contenido.BackGroundAnimated;
 import contenido.Bullet;
+import contenido.EBullet;
 import contenido.Player;
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -31,12 +34,19 @@ import javafx.scene.layout.AnchorPane;
 public class GameCoreController {
 
     Player avion;
-    Bullet bala;
     BackGroundAnimated backgroundAnimated;
-    private GraphicsContext graficos;
-    private int x = 0;
+
+    GraphicsContext graficos;
+    int speedEBullet;
+    int x = 0;
+    int probability;
+
     public static boolean goRight;
     public static boolean goLeft;
+
+    List<Player> listEnemies = new ArrayList<>();
+    List<Bullet> listBullets = new ArrayList<>();
+    List<EBullet> listEBullets = new ArrayList<>();
 
 //    los hashMap son extramadamente importantes para la optimizacion del uso del disco.
 //    Usar siempre hashMaps para el renderizado de cualquier imagen esto permite usar la imagen 
@@ -44,14 +54,17 @@ public class GameCoreController {
     public static HashMap<String, Image> images;
 
     @FXML
-    private Canvas miCanva;
+    Canvas miCanva;
 
     //Si bien no se usa esate recurso, debido al uso de fxml se conserva por el momento.
     @FXML
-    private AnchorPane miPane;
+    AnchorPane miPane;
 
     public void initialize() {
         initComponents();
+        App.questionControl = "play";
+        System.out.println(listEBullets.size());
+        System.out.println(avion.getX());
         cicloJuego();
     }
 
@@ -60,19 +73,25 @@ public class GameCoreController {
         loadImages();
         graficos = miCanva.getGraphicsContext2D();
         miCanva.setFocusTraversable(true);
-        bala = new Bullet(60, 666, 0, "bullet");
         switch (App.levelHard) {
             case "easy":
-                avion = new Player(3, 462, 666, 6, "nave_easy");
+                avion = new Player(3, 462, 666, 12, "nave_easy");
+                speedEBullet = 20;
+                probability = 100;
                 break;
             case "medium":
-                avion = new Player(3, 462, 666, 6, "nave_medium");
+                avion = new Player(3, 462, 666, 12, "nave_medium");
+                speedEBullet = 30;
+                probability = 80;
                 break;
             case "hard":
-                avion = new Player(3, 462, 666, 6, "nave_hard");
+                avion = new Player(3, 462, 666, 12, "nave_hard");
+                speedEBullet = 40;
+                probability = 50;
                 break;
         }
-        backgroundAnimated = new BackGroundAnimated(0, 0, 6, "dynamic", "dynamicRev");
+        backgroundAnimated = new BackGroundAnimated(0, 0, 3, "dynamic", "dynamicRev");
+        createEnemies();
     }
 
     public void loadImages() {
@@ -84,22 +103,7 @@ public class GameCoreController {
         images.put("dynamicRev", new Image("/imagenes/dinamicos/fondo_dinamico_2.png"));
         images.put("enemy", new Image("/imagenes/naves/eBasico.png"));
         images.put("bullet", new Image("/imagenes/bala.png"));
-    }
-
-    public void createEnemies() {
-
-        for (int i = 1; i < 6; i++) {
-            Player enemy = new Player(1, 150 * i, 200, 0, "enemy");
-            enemy.drawSome(graficos);
-        }
-    }
-
-    public void draw() {
-        graficos.clearRect(0, 0, miCanva.getWidth(), miCanva.getHeight());
-        backgroundAnimated.drawSome(graficos);
-        avion.drawSome(graficos);
-        bala.drawSome(graficos);
-        createEnemies();
+        images.put("ebullet", new Image("/imagenes/eBullet.png"));
     }
 
     // ciclo de juego principal
@@ -107,8 +111,17 @@ public class GameCoreController {
         AnimationTimer animationTimer = new AnimationTimer() {
             @Override
             public void handle(long currentTime) {
-                upState();
-                draw();
+
+                if (App.questionControl == "question") {
+                    try {
+                        moveToQuestion();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (App.questionControl == "play") {
+                    draw();
+                    upState();
+                }
             }
         };
         animationTimer.start();
@@ -116,9 +129,133 @@ public class GameCoreController {
 
     //funcion para actualizar los dibujos graficados en pantalla
     public void upState() {
-        avion.checkTouch(bala);
         avion.move();
         backgroundAnimated.move();
+        moveBullets();
+        collisionHandle();
+        collisionEHandle();
+        shotRandomEBullet();
+    }
+
+    public void draw() {
+        graficos.clearRect(0, 0, miCanva.getWidth(), miCanva.getHeight());
+        backgroundAnimated.drawSome(graficos);
+        drawEnemies();
+        drawEBullets();
+        moveEBullets();
+        avion.drawSome(graficos);
+        drawBullets();
+    }
+
+    //funcion para crear enemigos
+    public void createEnemies() {
+        for (int i = 1; i < 6; i++) {
+            listEnemies.add(new Player(1, 150 * i, 100, 0, "enemy"));
+        }
+    }
+
+    //Funcion para actulizar el estado de los enemigos
+    public void drawEnemies() {
+        Iterator<Player> enemies = listEnemies.iterator();
+        while (enemies.hasNext()) {
+            enemies.next().drawSome(graficos);
+        }
+    }
+
+    //funcion para disparar balas del jugador
+    public void shotBullet() {
+        listBullets.add(new Bullet(avion.getX() + 50, avion.getY() - 100, 20, "bullet"));
+        shotRandomEBullet();
+    }
+
+    public void drawBullets() {
+        Iterator<Bullet> bullets = listBullets.iterator();
+        while (bullets.hasNext()) {
+            bullets.next().drawSome(graficos);
+        }
+    }
+
+    public void moveBullets() {
+        Iterator<Bullet> bulletIterator = listBullets.iterator();
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            bullet.move();
+            if (bullet.getY() < 0) {
+                bulletIterator.remove();
+            }
+        }
+    }
+
+    public void shotEBullet(Player enemy) {
+        listEBullets.add(new EBullet(enemy.getX() + 15, enemy.getY() + 100, speedEBullet, "ebullet"));
+    }
+
+    public void shotRandomEBullet() {
+        Iterator<Player> enemies = listEnemies.iterator();
+        SecureRandom secureRandom = new SecureRandom();
+        while (enemies.hasNext()) {
+//            System.out.println(probability);
+            int randomNumber = secureRandom.nextInt(probability) + 1;
+            Player enemy = enemies.next();
+            if (randomNumber == 1) {
+                shotEBullet(enemy);
+                break;
+            }
+        }
+    }
+
+    public void drawEBullets() {
+        Iterator<EBullet> ebullets = listEBullets.iterator();
+        while (ebullets.hasNext()) {
+            EBullet oneEB = ebullets.next();
+            oneEB.drawSome(graficos);
+        }
+    }
+
+    public void moveEBullets() {
+        Iterator<EBullet> ebullets = listEBullets.iterator();
+        while (ebullets.hasNext()) {
+            EBullet ebullet = ebullets.next();
+            ebullet.move();
+            if (ebullet.getY() > 1024) {
+                ebullets.remove();
+            }
+        }
+    }
+
+    public void collisionHandle() {
+        Iterator<Bullet> bulletIterator = listBullets.iterator();
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            Iterator<Player> enemies = listEnemies.iterator();
+            while (enemies.hasNext()) {
+                Player enemy = enemies.next();
+                if (bullet.checkTouch(enemy)) {
+                    bulletIterator.remove();
+                    enemies.remove();
+                }
+            }
+        }
+    }
+
+    public void collisionEHandle() {
+        Iterator<EBullet> ebullets = listEBullets.iterator();
+//        System.out.println(listEBullets.size());
+        while (ebullets.hasNext()) {
+            EBullet ebullet = ebullets.next();
+            if (avion.checkTouch(ebullet)) {
+                System.out.println("aqui");
+                goRight = false;
+                goLeft = false;
+                ebullets.remove();
+                App.questionControl = "question";
+                break;
+            }
+        }
+    }
+
+    public void moveToQuestion() throws IOException {
+        App.setRoot("question");
     }
 
     //Funcion para devolverse, se debe configurar el menu al precionar scape.
@@ -136,7 +273,11 @@ public class GameCoreController {
                 goLeft = true;
                 break;
             case "W":
-                avion.setSpeedMove(12);
+                avion.setSpeedMove(24);
+                break;
+            case "SPACE":
+                shotBullet();
+                break;
         }
     }
 
@@ -150,10 +291,11 @@ public class GameCoreController {
                 goLeft = false;
                 break;
             case "W":
-                avion.setSpeedMove(6);
+                avion.setSpeedMove(12);
                 break;
             case "Q":
                 App.setRoot("question");
+                break;
         }
     }
 

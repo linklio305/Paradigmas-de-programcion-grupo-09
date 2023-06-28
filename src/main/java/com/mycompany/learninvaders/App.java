@@ -14,11 +14,12 @@ import java.io.IOException;
 public class App extends Application {
 
     private static Scene scene;
-    
+
     public static String userName;
     public static String levelHard;
     public static int[] scoresNum;
     public static String[] names;
+    public static String questionControl = "play";
 
     @Override
     public void start(Stage stage) throws IOException {
