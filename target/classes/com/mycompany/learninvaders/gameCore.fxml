@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="miPane"  prefHeight="768.0" prefWidth="1024.0"
+            xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mycompany.learninvaders.GameCoreController">
+    <children>
+        <ImageView fitHeight="775.0" fitWidth="1030.0">
+            <image>
+                <Image url="@../../../imagenes/fondoSolo.png" />
+            </image>
+        </ImageView>
+        <Canvas fx:id="miCanva" height="768" width="1024" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" />
+        <!--<Button layoutX="945.0" layoutY="35.0" mnemonicParsing="false" text="Button" />-->
+    </children>
+</AnchorPane>

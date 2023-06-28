@@ -1,0 +1,14 @@
+contenido\Player.class
+com\mycompany\learninvaders\PrimaryController.class
+contenido\BackGroundAnimated.class
+module-info.class
+contenido\QuestionGenerator.class
+contenido\GameObject.class
+com\mycompany\learninvaders\GameCoreController$1.class
+com\mycompany\learninvaders\SecondaryController.class
+com\mycompany\learninvaders\GameCoreController.class
+contenido\EBullet.class
+com\mycompany\learninvaders\GameOverController.class
+com\mycompany\learninvaders\App.class
+contenido\Bullet.class
+com\mycompany\learninvaders\QuestionController.class
